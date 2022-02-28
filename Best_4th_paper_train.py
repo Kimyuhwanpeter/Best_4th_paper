@@ -2,7 +2,7 @@
 from charset_normalizer import from_bytes
 from base_UNET import *
 from modified_deeplab_V3 import *
-from PFB_measurement import Measurement
+from measurement import Measurement
 from random import shuffle, random
 from tensorflow.keras import backend as K
 
