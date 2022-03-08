@@ -704,14 +704,18 @@ def main():
 
                 ################################################################################################
                 # ablation 1    Only 2nd stage segmentation without 1st model (delete raw_logits)
-                #crop_weed_output = tf.nn.softmax(output[0, :, :, :], -1)
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
+                #object_output = tf.nn.sigmoid(output[0, :, :, 2:3])
+                #crop_weed_output = tf.concat([crop_weed_output, object_output], -1)
                 #crop_weed_output = tf.argmax(crop_weed_output, -1, output_type=tf.int32)
                 #image = crop_weed_output
                 ################################################################################################
 
                 ################################################################################################
                 # ablation 2    Only 2nd stage segmentation with 1st model (keep raw_logits)
-                #crop_weed_output = tf.nn.softmax(output[0, :, :, :], -1)
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
+                #object_output = tf.nn.sigmoid(output[0, :, :, 2:3])
+                #crop_weed_output = tf.concat([crop_weed_output, object_output], -1)
                 #crop_weed_output = tf.argmax(crop_weed_output, -1, output_type=tf.int32)
                 #image = crop_weed_output
                 ################################################################################################
@@ -794,12 +798,12 @@ def main():
                 pred_mask_warping = np.where(temp_img == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), pred_mask_warping)
                 pred_mask_warping /= 255.
 
-                #name = test_img_dataset[i].split("/")[-1].split(".")[0]
-                #plt.imsave(FLAGS.test_images + "/" + name + "_1st_model_output.png", raw_logits[0, :, :, 0], cmap="gray")
-                #plt.imsave(FLAGS.test_images + "/" + name + "_attention_img.png", (batch_image * raw_logits)[0, :, :, :])
-                #plt.imsave(FLAGS.test_images + "/" + name + "_label.png", label_mask_color)
-                #plt.imsave(FLAGS.test_images + "/" + name + "_predict.png", pred_mask_color)
-                #plt.imsave(FLAGS.test_images + "/" + name + "_predict_warp.png", pred_mask_warping)
+                name = test_img_dataset[i].split("/")[-1].split(".")[0]
+                plt.imsave(FLAGS.test_images + "/" + name + "_1st_model_output.png", raw_logits[0, :, :, 0], cmap="gray")
+                plt.imsave(FLAGS.test_images + "/" + name + "_attention_img.png", (batch_image * raw_logits)[0, :, :, :])
+                plt.imsave(FLAGS.test_images + "/" + name + "_label.png", label_mask_color)
+                plt.imsave(FLAGS.test_images + "/" + name + "_predict.png", pred_mask_color)
+                plt.imsave(FLAGS.test_images + "/" + name + "_predict_warp.png", pred_mask_warping)
 
                 miou += miou_
                 crop_iou += crop_iou_
