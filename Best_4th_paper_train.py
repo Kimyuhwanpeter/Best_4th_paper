@@ -702,17 +702,52 @@ def main():
                 object_output = tf.where(object_output >= 0.5, 1, 2).numpy()
                 false_object_indices = np.where(object_output == 2)
 
+                ################################################################################################
+                # 정석대로 predict 했을 시
                 crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
                 crop_weed_output = tf.cast(tf.argmax(crop_weed_output, -1), tf.int32).numpy()
                 crop_weed_output[false_object_indices] = 2
                 image = crop_weed_output
-
+                ################################################################################################
 
                 batch_label = batch_labels[j]
                 batch_label = tf.cast(batch_labels[j], tf.uint8).numpy()
                 batch_label = np.where(batch_label == FLAGS.ignore_label, 2, batch_label)    # 2 is void
                 batch_label = np.where(batch_label == 255, 0, batch_label)
                 batch_label = np.where(batch_label == 128, 1, batch_label)
+
+                ################################################################################################
+                # CWFID
+                #temp_crop_weed_output = np.zeros([FLAGS.img_size, FLAGS.img_size], dtype=np.uint8)
+                #label_crop_indices = np.where(batch_label == 0)
+                #weed_indices = np.where(crop_weed_output == 1)
+                #temp_crop_weed_output[weed_indices] = 1
+                #temp_crop_weed_output[false_object_indices] = 2
+                #temp_crop_weed_output[label_crop_indices] = 0
+                #temp_crop_weed_output[weed_indices] = 1
+                #crop_weed_output = temp_crop_weed_output
+                #image = crop_weed_output
+                ################################################################################################
+
+                ################################################################################################
+                # BoniRob
+                #temp_crop_weed_output = np.ones([FLAGS.img_size, FLAGS.img_size], dtype=np.uint8)
+                #label_weed_indices = np.where(batch_label == 1)
+                #crop_indices = np.where(crop_weed_output == 0)
+                #temp_crop_weed_output[crop_indices] = 0
+                #temp_crop_weed_output[false_object_indices] = 2
+                #temp_crop_weed_output[label_weed_indices] = 1
+                #temp_crop_weed_output[crop_indices] = 0
+                #crop_weed_output = temp_crop_weed_output
+                #image = crop_weed_output
+                ################################################################################################
+
+                ################################################################################################
+                # rice seedling weed --> back ground는 모두 일치한다는 가정으로
+                #false_label_object_indices = np.where(batch_label == 2)
+                #crop_weed_output[false_label_object_indices] = 2
+                #image = crop_weed_output
+                ################################################################################################
 
 
                 miou_, crop_iou_, weed_iou_ = Measurement(predict=image,
