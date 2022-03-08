@@ -10,3 +10,13 @@
 <br/>
 
 * 현재 실험부분 쓰는중 (ablation 정리하고있음)
+<br/>
+
+ablation
+- Only 2nd stage segmentation without 1st model
+
+- Only 2nd stage segmentation with 1st model 
+
+- 2-stage segmentation without 1st model
+
+- 2-stage segmentation (Proposed method)
