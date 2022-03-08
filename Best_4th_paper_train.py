@@ -703,18 +703,25 @@ def main():
                 false_object_indices = np.where(object_output == 2)
 
                 ################################################################################################
-                # ablation 1    Only 2nd stage segmentation without 1st model
+                # ablation 1    Only 2nd stage segmentation without 1st model (delete raw_logits)
                 #crop_weed_output = tf.nn.softmax(output[0, :, :, :], -1)
                 #crop_weed_output = tf.argmax(crop_weed_output, -1, output_type=tf.int32)
                 #image = crop_weed_output
                 ################################################################################################
 
                 ################################################################################################
-                # ablation 2    Only 2nd stage segmentation with 1st model
+                # ablation 2    Only 2nd stage segmentation with 1st model (keep raw_logits)
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, :], -1)
+                #crop_weed_output = tf.argmax(crop_weed_output, -1, output_type=tf.int32)
+                #image = crop_weed_output
                 ################################################################################################
 
                 ################################################################################################
-                # ablation 3    2-stage segmentation without 1st model
+                # ablation 3    2-stage segmentation without 1st model (delete raw_logits)
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
+                #crop_weed_output = tf.cast(tf.argmax(crop_weed_output, -1), tf.int32).numpy()
+                #crop_weed_output[false_object_indices] = 2
+                #image = crop_weed_output
                 ################################################################################################
 
 
