@@ -703,11 +703,28 @@ def main():
                 false_object_indices = np.where(object_output == 2)
 
                 ################################################################################################
+                # ablation 1    Only 2nd stage segmentation without 1st model
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, :], -1)
+                #crop_weed_output = tf.argmax(crop_weed_output, -1, output_type=tf.int32)
+                #image = crop_weed_output
+                ################################################################################################
+
+                ################################################################################################
+                # ablation 2    Only 2nd stage segmentation with 1st model
+                ################################################################################################
+
+                ################################################################################################
+                # ablation 3    2-stage segmentation without 1st model
+                ################################################################################################
+
+
+
+                ################################################################################################
                 # 정석대로 predict 했을 시
-                crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
-                crop_weed_output = tf.cast(tf.argmax(crop_weed_output, -1), tf.int32).numpy()
-                crop_weed_output[false_object_indices] = 2
-                image = crop_weed_output
+                #crop_weed_output = tf.nn.softmax(output[0, :, :, 0:2], -1)
+                #crop_weed_output = tf.cast(tf.argmax(crop_weed_output, -1), tf.int32).numpy()
+                #crop_weed_output[false_object_indices] = 2
+                #image = crop_weed_output
                 ################################################################################################
 
                 batch_label = batch_labels[j]
@@ -750,9 +767,10 @@ def main():
                 ################################################################################################
 
 
+
                 miou_, crop_iou_, weed_iou_ = Measurement(predict=image,
                                     label=batch_label, 
-                                    shape=[FLAGS.img_size*FLAGS.img_size, ], 
+                                    shape=[FLAGS.img_size*FLAGS.img_size, ],
                                     total_classes=FLAGS.total_classes).MIOU()
 
                 pred_mask_color = color_map[crop_weed_output]  # 논문그림처럼 할것!
@@ -769,11 +787,12 @@ def main():
                 pred_mask_warping = np.where(temp_img == np.array([1,1,1], dtype=np.uint8), np.array([0, 0, 255], dtype=np.uint8), pred_mask_warping)
                 pred_mask_warping /= 255.
 
-                name = test_img_dataset[i].split("/")[-1].split(".")[0]
-                plt.imsave(FLAGS.test_images + "/" + name + "_label.png", label_mask_color)
-                plt.imsave(FLAGS.test_images + "/" + name + "_predict.png", pred_mask_color)
-                plt.imsave(FLAGS.test_images + "/" + name + "_predict_warp.png", pred_mask_warping)
-                #back_iou += back_iou_
+                #name = test_img_dataset[i].split("/")[-1].split(".")[0]
+                #plt.imsave(FLAGS.test_images + "/" + name + "_1st_model_output.png", raw_logits[0, :, :, 0], cmap="gray")
+                #plt.imsave(FLAGS.test_images + "/" + name + "_attention_img.png", (batch_image * raw_logits)[0, :, :, :])
+                #plt.imsave(FLAGS.test_images + "/" + name + "_label.png", label_mask_color)
+                #plt.imsave(FLAGS.test_images + "/" + name + "_predict.png", pred_mask_color)
+                #plt.imsave(FLAGS.test_images + "/" + name + "_predict_warp.png", pred_mask_warping)
 
                 miou += miou_
                 crop_iou += crop_iou_
